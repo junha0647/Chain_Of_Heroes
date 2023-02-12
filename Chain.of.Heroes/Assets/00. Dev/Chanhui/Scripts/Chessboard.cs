@@ -9,6 +9,9 @@ public class Chessboard : MonoBehaviour
     [Header("Materials")]
     [SerializeField] private Material tileMaterial;
     [SerializeField] private Material ToachtileMaterial;
+    [SerializeField] private float deathSize = 0.7f;
+    [SerializeField] private float deathSpacing = 0.3f;
+    [SerializeField] private float dragOffset = 0.75f;
 
     [Header("Prefabs & Materials")]
     [SerializeField] private MapData monsterData;
@@ -25,7 +28,10 @@ public class Chessboard : MonoBehaviour
     private GameObject[,] tiles;
     private Monster[,] monsters;
     private Monster currentDragging;
-
+    
+    private List<Monster> deadPlayer = new List<Monster>();
+    private List<Monster> deadMonster = new List<Monster>();
+    
     private Camera currentCamera;
 
     private Vector2Int currentHover;
@@ -81,6 +87,7 @@ public class Chessboard : MonoBehaviour
             }
 
             // -----------------------------------------------------
+            // 마우스로 피스들을 움직이는 코드
             // If we press down on the mouse
             if (Input.GetMouseButtonDown(0))
             {
@@ -128,6 +135,19 @@ public class Chessboard : MonoBehaviour
                 currentDragging = null;
             }
         }
+
+        //---------------------------------------------------------
+        // 내 마우스가 무엇을 집고 있는지 체크
+        if(currentDragging)
+        {
+            Plane horizontalPlane = new Plane(Vector3.up, Vector3.up * yOffset);
+            float distance = 0.0f;
+            if(horizontalPlane.Raycast(ray, out distance))
+            {
+                currentDragging.SetPosition(ray.GetPoint(distance) + Vector3.up * dragOffset);
+            }
+        }
+        //--------------------------------------------------------
     }
 
     //  all tile make (Generate the board)
@@ -193,6 +213,7 @@ public class Chessboard : MonoBehaviour
     }
 
     //--------------------------------------------------------------
+    // 죽였을때 피스틀을 이동시키는 코드
     private bool MoveTo(Monster cp, int x, int y)
     {
         Vector2Int previousPosition = new Vector2Int(cp.currentX, cp.currentY);
@@ -206,6 +227,25 @@ public class Chessboard : MonoBehaviour
             {
                 return false;
             }
+
+            //If its the enemy team
+            if(ocp.team == 0)
+            {
+                deadPlayer.Add(ocp);
+                ocp.SetScale(Vector3.one * deathSize);
+                ocp.SetPosition(new Vector3(8 * tilesize, yOffset, -1 * tilesize)
+                    - bounds + new Vector3(tilesize / 2, 0, tilesize / 2)
+                    + (Vector3.forward * deathSpacing) * deadPlayer.Count);
+            }
+            else
+            {
+                deadMonster.Add(ocp);
+                ocp.SetScale(Vector3.one * deathSize);
+                ocp.SetPosition(new Vector3(-1 * tilesize, yOffset, 8 * tilesize)
+                    - bounds + new Vector3(tilesize / 2, 0, tilesize / 2)
+                    + (Vector3.back * deathSpacing) * deadMonster.Count);
+            }
+
         }
 
         monsters[x, y] = cp;
