@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Test1 : Monster
 {
+    
+    // Pawn
     public override List<Vector2Int> GetAvailableMoves(ref Monster[,] board, int tileCountX, int tileCountY)
     {
         List<Vector2Int> r = new List<Vector2Int>();
@@ -24,7 +26,18 @@ public class Test1 : Monster
                 r.Add(new Vector2Int(currentX, currentY + direction));
             }
         }
+        
+        if(currentX != 0) 
+        {
+            if (board[currentX - 1, currentY + direction] != null && board[currentX - 1, currentY + direction].team != team)
+            {
+                r.Add(new Vector2Int(currentX - 1, currentY + direction));
+            }
+        }
 
         return r;
     }
+
 }
+
+
