@@ -41,9 +41,12 @@ public class Chessboard : MonoBehaviour
 
     private Vector2Int currentHover;
     private Vector3 bounds;
+    private bool isPlayerTurn;
 
     private void Awake()
     {
+        isPlayerTurn = true;
+
         GenerateAllTiles(tilesize, tile_X, tile_Y);
     }
 
@@ -105,7 +108,7 @@ public class Chessboard : MonoBehaviour
                 if (monsters[hitPosition.x, hitPosition.y] != null)
                 {
                     // Is it our turn?
-                    if(true)
+                    if((monsters[hitPosition.x, hitPosition.y].team == 0 && isPlayerTurn) || (monsters[hitPosition.x, hitPosition.y].team == 1 && !isPlayerTurn))
                     {
                         currentDragging = monsters[hitPosition.x, hitPosition.y];
 
@@ -260,6 +263,7 @@ public class Chessboard : MonoBehaviour
             //If its the enemy team
             if(ocp.team == 0)
             {
+
                 deadPlayer.Add(ocp);
                 ocp.SetScale(Vector3.one * deathSize);
                 ocp.SetPosition(new Vector3(8 * tilesize, yOffset, -1 * tilesize)
@@ -268,6 +272,11 @@ public class Chessboard : MonoBehaviour
             }
             else
             {
+                if (deadMonster.Count == monsterData.MONSTER_NUM)
+                {
+                    CheckMate(0);
+                }
+
                 deadMonster.Add(ocp);
                 ocp.SetScale(Vector3.one * deathSize);
                 ocp.SetPosition(new Vector3(-1 * tilesize, yOffset, 8 * tilesize)
@@ -281,6 +290,9 @@ public class Chessboard : MonoBehaviour
         monsters[previousPosition.x, previousPosition.y] = null;
 
         PositionSingleMonster(x, y);
+
+        isPlayerTurn = !isPlayerTurn;
+
         return true;
     }
     private bool ContainsValidMove(ref List<Vector2Int> moves, Vector2 pos)
@@ -365,6 +377,24 @@ public class Chessboard : MonoBehaviour
             RenderObject(availableMoves[i].x, availableMoves[i].y, tileMaterial);
         }
         availableMoves.Clear();
+    }
+
+    // {Checkmate}
+    private void CheckMate(int team)
+    {
+        DisplayVictory(team);
+    }
+    private void DisplayVictory(int winningTeam)
+    {
+
+    }
+    public void OnResetButton()
+    {
+
+    }
+    public void OnExitButton()
+    {
+
     }
 
     // {타일의 Material을 결정하는 함수}
