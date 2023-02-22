@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test1 : Monster
+public class Test1 : Pieces
 {
     
     // Pawn
-    public override List<Vector2Int> GetAvailableMoves(ref Monster[,] board, int tileCountX, int tileCountY)
+    public override List<Vector2Int> GetAvailableMoves(ref Pieces[,] board, int tileCountX, int tileCountY)
     {
         List<Vector2Int> r = new List<Vector2Int>();
 

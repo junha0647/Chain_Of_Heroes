@@ -13,8 +13,12 @@ public class Chessboard : MonoBehaviour
     //--------------------------------------
     [SerializeField] private float deathSize = 0.7f;
     [SerializeField] private float deathSpacing = 0.3f;
-    [SerializeField] private float dragOffset = 0.75f;
+    //[SerializeField] private float dragOffset = 0.75f;
     //---------------------------------------
+    [Header("UI")]
+    [SerializeField] private GameObject victoryScreen;
+    [SerializeField] private GameObject AttackScreen;
+
 
     [Header("Prefabs & Materials")]
     [SerializeField] private MapData monsterData;
@@ -29,11 +33,11 @@ public class Chessboard : MonoBehaviour
 
     [Header("Chess boards arr")]
     private GameObject[,] tiles;
-    private Monster[,] monsters;
+    private Pieces[,] monsters;
     //---------------------------------------------
-    private Monster currentDragging;
-    private List<Monster> deadPlayer = new List<Monster>();
-    private List<Monster> deadMonster = new List<Monster>();
+    private Pieces currentDragging;
+    [SerializeField] private List<Pieces> deadPlayer = new List<Pieces>();
+    [SerializeField] private List<Pieces> deadMonster = new List<Pieces>();
     private List<Vector2Int> availableMoves = new List<Vector2Int>();
     //---------------------------------------------
 
@@ -42,10 +46,15 @@ public class Chessboard : MonoBehaviour
     private Vector2Int currentHover;
     private Vector3 bounds;
     private bool isPlayerTurn;
+    private bool isUIClick;
+
+    //-----------------------------
+    private Vector2Int PresentPosition;
 
     private void Awake()
     {
         isPlayerTurn = true;
+        isUIClick = false;
 
         GenerateAllTiles(tilesize, tile_X, tile_Y);
     }
@@ -68,7 +77,7 @@ public class Chessboard : MonoBehaviour
 
         RaycastHit info;
         Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out info, 100, LayerMask.GetMask("Tile", "Hover", "Highlight")))
+        if (Physics.Raycast(ray, out info, 100, LayerMask.GetMask("Tile", "Hover", "Highlight", "AttackUI")))
         {
             // Get the indexs of the tile i've hit
             Vector2Int hitPosition = LookupTileIndex(info.transform.gameObject);
@@ -108,19 +117,26 @@ public class Chessboard : MonoBehaviour
                 if (monsters[hitPosition.x, hitPosition.y] != null)
                 {
                     // Is it our turn?
-                    if((monsters[hitPosition.x, hitPosition.y].team == 0 && isPlayerTurn) || (monsters[hitPosition.x, hitPosition.y].team == 1 && !isPlayerTurn))
+                    if((monsters[hitPosition.x, hitPosition.y].team == 0 && isPlayerTurn))
+                    {
+                        AttackState(0);
+                        PresentPosition = hitPosition;
+                    }
+                    else if(monsters[hitPosition.x, hitPosition.y].team == 1 && !isPlayerTurn)
                     {
                         currentDragging = monsters[hitPosition.x, hitPosition.y];
 
                         //Get a list of where I can go, hightlight tiles as well
                         availableMoves = currentDragging.GetAvailableMoves(ref monsters, tile_X, tile_Y);
-
+                        isUIClick = true;
                         HighlightTiles();
                     }
                 }
             }
+            
+
             // If we are releasing the mouse button
-            if (currentDragging != null && Input.GetMouseButtonUp(0))
+            if (currentDragging != null && isUIClick && Input.GetMouseButtonUp(0))
             {
                 Vector2Int previousPosition = new Vector2Int(currentDragging.currentX, currentDragging.currentY);
 
@@ -133,6 +149,10 @@ public class Chessboard : MonoBehaviour
                 currentDragging = null;
                 // 이동시 타일 색 변경
                 ReMoveHighlightTiles();
+
+                isUIClick = !isUIClick;
+                AttackScreen.transform.GetChild(0).gameObject.SetActive(false);
+                AttackScreen.SetActive(false);
             }
 
             //-----------------------------------------------------------
@@ -157,15 +177,15 @@ public class Chessboard : MonoBehaviour
 
             if(currentDragging && Input.GetMouseButtonUp(0))
             {
-                currentDragging.SetPosition(GetTileCenter(currentDragging.currentX, currentDragging.currentY));
-                currentDragging = null;
+                Debug.Log("들어옴");
                 // 이동시 타일 색 변경
-                ReMoveHighlightTiles();
+                //ReMoveHighlightTiles();
             }
         }
 
         //---------------------------------------------------------
         // 내 마우스가 무엇을 집고 있는지 체크 = 이 부분도 보류!
+        /*
         if(currentDragging)
         {
             Plane horizontalPlane = new Plane(Vector3.up, Vector3.up * yOffset);
@@ -174,7 +194,7 @@ public class Chessboard : MonoBehaviour
             {
                 currentDragging.SetPosition(ray.GetPoint(distance) + Vector3.up * dragOffset);
             }
-        }
+        }*/
         //--------------------------------------------------------
     }
 
@@ -241,7 +261,7 @@ public class Chessboard : MonoBehaviour
     }
     //--------------------------------------------------------------
     // 죽였을때 피스틀을 이동시키는 코드 = 이 코드는 데이터 낭비를 줄이기 위해 사용 가능!!
-    private bool MoveTo(Monster cp, int x, int y)
+    private bool MoveTo(Pieces cp, int x, int y)
     {
         if(!ContainsValidMove(ref availableMoves, new Vector2(x,y)))
         {
@@ -253,7 +273,7 @@ public class Chessboard : MonoBehaviour
         //Is there another piece on the target position?
         if (monsters[x,y] != null)
         {
-            Monster ocp = monsters[x,y];
+            Pieces ocp = monsters[x,y];
 
             if(cp.team == ocp.team)
             {
@@ -263,6 +283,12 @@ public class Chessboard : MonoBehaviour
             //If its the enemy team
             if(ocp.team == 0)
             {
+                /*
+                if (deadPlayer.Count > 0)
+                {
+                    CheckMate(1);
+                }*/
+                CheckMate(1);
 
                 deadPlayer.Add(ocp);
                 ocp.SetScale(Vector3.one * deathSize);
@@ -272,7 +298,7 @@ public class Chessboard : MonoBehaviour
             }
             else
             {
-                if (deadMonster.Count == monsterData.MONSTER_NUM)
+                if (deadMonster.Count == monsterData.MONSTER_NUM - 1)
                 {
                     CheckMate(0);
                 }
@@ -311,7 +337,7 @@ public class Chessboard : MonoBehaviour
     // {Spawning of the pieces}
     private void SpawnAllMonster()
     {
-        monsters = new Monster[tile_X, tile_Y];
+        monsters = new Pieces[tile_X, tile_Y];
 
         for (int i = 0; i < monsterData.MONSTER_NUM; i++)
         {
@@ -322,17 +348,17 @@ public class Chessboard : MonoBehaviour
         }
         monsters[4, 0] = SpawnSinglePlayer(0);
     }
-    private Monster SpawnSingleMonster(int i, int team)
+    private Pieces SpawnSingleMonster(int i, int team)
     {
-        Monster cp = Instantiate(monsterData.Monster_pf[(int)monsterData.Type[i]], transform).GetComponent<Monster>();
+        Pieces cp = Instantiate(monsterData.Monster_pf[(int)monsterData.Type[i]], transform).GetComponent<Pieces>();
         
         cp.team = team;
 
         return cp;
     }
-    private Monster SpawnSinglePlayer(int team)
+    private Pieces SpawnSinglePlayer(int team)
     {
-        Monster player = Instantiate(Player, transform).GetComponent<Monster>();
+        Pieces player = Instantiate(Player, transform).GetComponent<Pieces>();
         player.team = team;
         return player;
     }
@@ -386,20 +412,77 @@ public class Chessboard : MonoBehaviour
     }
     private void DisplayVictory(int winningTeam)
     {
-
+        victoryScreen.SetActive(true);
+        victoryScreen.transform.GetChild(winningTeam).gameObject.SetActive(true);
     }
     public void OnResetButton()
     {
+        // UI
+        victoryScreen.transform.GetChild(0).gameObject.SetActive(false);
+        victoryScreen.transform.GetChild(1).gameObject.SetActive(false);
+        victoryScreen.SetActive(false);
+
+        // Fields reset
+        currentDragging = null;
+        availableMoves = new List<Vector2Int>();
+
+        // Clean up
+        for(int x = 0; x < tile_X; x++)
+        {
+            for(int y = 0; y < tile_Y; y++)
+            {
+                if(monsters[x, y] != null)
+                {
+                    Destroy(monsters[x, y].gameObject);
+                }
+
+                monsters[x, y] = null;
+            }
+        }
+
+        for(int i = 0; i < deadPlayer.Count; i++)
+        {
+            Destroy(deadPlayer[i].gameObject);
+        }
+        for (int i = 0; i < deadMonster.Count; i++)
+        {
+            Destroy(deadMonster[i].gameObject);
+        }
+
+        deadPlayer.Clear();
+        deadMonster.Clear();
+
+        SpawnAllMonster();
+        PositionAllMonster();
+        isPlayerTurn = true;
 
     }
     public void OnExitButton()
     {
-
+        Application.Quit();
     }
 
     // {타일의 Material을 결정하는 함수}
     private void RenderObject(int x, int y, Material mal)
     {
         tiles[x, y].GetComponent<MeshRenderer>().material = new Material(mal);
+    }
+
+    // Player Attack State
+    private void AttackState(int team)
+    {
+        AttackScreen.SetActive(true);
+        AttackScreen.transform.GetChild(0).gameObject.SetActive(true);
+    }
+
+    public void OnMoveButton1()
+    {
+        isUIClick = true;
+        currentDragging = monsters[PresentPosition.x, PresentPosition.y];
+
+        //Get a list of where I can go, hightlight tiles as well
+        availableMoves = currentDragging.GetAvailableMoves(ref monsters, tile_X, tile_Y);
+
+        HighlightTiles();
     }
 }

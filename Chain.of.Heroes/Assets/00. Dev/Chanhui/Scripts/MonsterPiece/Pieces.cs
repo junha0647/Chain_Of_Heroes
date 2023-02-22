@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Monster : MonoBehaviour
+public class Pieces : MonoBehaviour
 {
     public int team;
     public int currentX;
@@ -19,7 +19,13 @@ public class Monster : MonoBehaviour
 
     }
 
-    public virtual List<Vector2Int> GetAvailableMoves(ref Monster[,] board, int tileCountX, int tileCountY)
+    private void Start()
+    {
+        // 플레이어와 몬스터 방향을 결정
+        transform.rotation = Quaternion.Euler((team == 0) ? Vector3.zero : new Vector3(0, 180, 0));
+    }
+
+    public virtual List<Vector2Int> GetAvailableMoves(ref Pieces[,] board, int tileCountX, int tileCountY)
     {
         List<Vector2Int> r = new List<Vector2Int>();
 

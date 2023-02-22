@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Knight : Monster
+public class Knight : Pieces
 {
-    public override List<Vector2Int> GetAvailableMoves(ref Monster[,] board, int tileCountX, int tileCountY)
+    public override List<Vector2Int> GetAvailableMoves(ref Pieces[,] board, int tileCountX, int tileCountY)
     {
         List<Vector2Int> r = new List<Vector2Int>();
 
