@@ -15,6 +15,7 @@ public class Queen : Pieces
                 r.Add(new Vector2Int(currentX, i));
             }
 
+            
             if (board[currentX, i] != null)
             {
                 if (board[currentX, i].team != team)
@@ -34,6 +35,7 @@ public class Queen : Pieces
                 r.Add(new Vector2Int(currentX, i));
             }
 
+            /*
             if (board[currentX, i] != null)
             {
                 if (board[currentX, i].team != team)
@@ -42,7 +44,7 @@ public class Queen : Pieces
                 }
 
                 break;
-            }
+            }*/
         }
 
         //Left
@@ -53,15 +55,15 @@ public class Queen : Pieces
                 r.Add(new Vector2Int(i, currentY));
             }
 
-            if (board[i, currentY] != null)
-            {
-                if (board[i, currentY].team != team)
-                {
-                    r.Add(new Vector2Int(i, currentY));
-                }
+            //if (board[i, currentY] != null)
+            //{
+            //    if (board[i, currentY].team != team)
+            //    {
+            //        r.Add(new Vector2Int(i, currentY));
+            //    }
 
-                break;
-            }
+            //    break;
+            //}
         }
 
         //Right
@@ -72,15 +74,15 @@ public class Queen : Pieces
                 r.Add(new Vector2Int(i, currentY));
             }
 
-            if (board[i, currentY] != null)
-            {
-                if (board[i, currentY].team != team)
-                {
-                    r.Add(new Vector2Int(i, currentY));
-                }
+            //if (board[i, currentY] != null)
+            //{
+            //    if (board[i, currentY].team != team)
+            //    {
+            //        r.Add(new Vector2Int(i, currentY));
+            //    }
 
-                break;
-            }
+            //    break;
+            //}
         }
 
         // Top Right
@@ -90,14 +92,14 @@ public class Queen : Pieces
             {
                 r.Add(new Vector2Int(x, y));
             }
-            else
-            {
-                if (board[x, y].team != team)
-                {
-                    r.Add(new Vector2Int(x, y));
-                }
-                break;
-            }
+            //else
+            //{
+            //    if (board[x, y].team != team)
+            //    {
+            //        r.Add(new Vector2Int(x, y));
+            //    }
+            //    break;
+            //}
         }
 
         // Top Left
@@ -107,14 +109,14 @@ public class Queen : Pieces
             {
                 r.Add(new Vector2Int(x, y));
             }
-            else
-            {
-                if (board[x, y].team != team)
-                {
-                    r.Add(new Vector2Int(x, y));
-                }
-                break;
-            }
+            //else
+            //{
+            //    if (board[x, y].team != team)
+            //    {
+            //        r.Add(new Vector2Int(x, y));
+            //    }
+            //    break;
+            //}
         }
 
         // Bottom Right
@@ -124,14 +126,14 @@ public class Queen : Pieces
             {
                 r.Add(new Vector2Int(x, y));
             }
-            else
-            {
-                if (board[x, y].team != team)
-                {
-                    r.Add(new Vector2Int(x, y));
-                }
-                break;
-            }
+            //else
+            //{
+            //    if (board[x, y].team != team)
+            //    {
+            //        r.Add(new Vector2Int(x, y));
+            //    }
+            //    break;
+            //}
         }
 
         // Bottom Left
@@ -141,14 +143,14 @@ public class Queen : Pieces
             {
                 r.Add(new Vector2Int(x, y));
             }
-            else
-            {
-                if (board[x, y].team != team)
-                {
-                    r.Add(new Vector2Int(x, y));
-                }
-                break;
-            }
+            //else
+            //{
+            //    if (board[x, y].team != team)
+            //    {
+            //        r.Add(new Vector2Int(x, y));
+            //    }
+            //    break;
+            //}
         }
 
 
