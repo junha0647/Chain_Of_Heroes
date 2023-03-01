@@ -16,10 +16,6 @@ public class Bishop : Pieces
             }
             else
             {
-                if (board[x, y].team != team)
-                {
-                    r.Add(new Vector2Int(x, y));
-                }
                 break;
             }
         }
@@ -33,10 +29,6 @@ public class Bishop : Pieces
             }
             else
             {
-                if (board[x, y].team != team)
-                {
-                    r.Add(new Vector2Int(x, y));
-                }
                 break;
             }
         }
@@ -50,10 +42,6 @@ public class Bishop : Pieces
             }
             else
             {
-                if (board[x, y].team != team)
-                {
-                    r.Add(new Vector2Int(x, y));
-                }
                 break;
             }
         }
@@ -67,10 +55,6 @@ public class Bishop : Pieces
             }
             else
             {
-                if (board[x, y].team != team)
-                {
-                    r.Add(new Vector2Int(x, y));
-                }
                 break;
             }
         }

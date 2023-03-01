@@ -1888,7 +1888,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2134647429}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1395136466003568799}
+        m_TargetAssemblyTypeName: Chessboard, Assembly-CSharp
+        m_MethodName: OnMoveButton2
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2134647429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2006,6 +2018,10 @@ PrefabInstance:
       propertyPath: victoryScreen
       value: 
       objectReference: {fileID: 284480092}
+    - target: {fileID: 1395136465821247272, guid: 61aecb89c13b5cc449141ee43dd75b10, type: 3}
+      propertyPath: AttackMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 84dcd01436850494aaac38bc531ebb11, type: 2}
     - target: {fileID: 1395136465821247272, guid: 61aecb89c13b5cc449141ee43dd75b10, type: 3}
       propertyPath: HighilghMaterial
       value: 

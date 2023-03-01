@@ -17,12 +17,7 @@ public class Rook : Pieces
             }
 
             if (board[currentX, i] != null)
-            {
-                if (board[currentX, i].team != team)
-                {
-                    r.Add(new Vector2Int(currentX, i));
-                }
-
+            {         
                 break;
             }
         }
@@ -37,11 +32,6 @@ public class Rook : Pieces
 
             if (board[currentX, i] != null)
             {
-                if (board[currentX, i].team != team)
-                {
-                    r.Add(new Vector2Int(currentX, i));
-                }
-
                 break;
             }
         }
@@ -55,12 +45,7 @@ public class Rook : Pieces
             }
 
             if (board[i, currentY] != null)
-            {
-                if (board[i, currentY].team != team)
-                {
-                    r.Add(new Vector2Int(i, currentY));
-                }
-
+            {    
                 break;
             }
         }
@@ -75,11 +60,6 @@ public class Rook : Pieces
 
             if (board[i, currentY] != null)
             {
-                if (board[i, currentY].team != team)
-                {
-                    r.Add(new Vector2Int(i, currentY));
-                }
-
                 break;
             }
         }

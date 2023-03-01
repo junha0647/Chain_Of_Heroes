@@ -10,6 +10,7 @@ public class Chessboard : MonoBehaviour
     [SerializeField] private Material tileMaterial;
     [SerializeField] private Material ToachtileMaterial;
     [SerializeField] private Material HighilghMaterial;
+    [SerializeField] private Material AttackMaterial;
     //--------------------------------------
     [SerializeField] private float deathSize = 0.7f;
     [SerializeField] private float deathSpacing = 0.3f;
@@ -77,7 +78,7 @@ public class Chessboard : MonoBehaviour
 
         RaycastHit info;
         Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out info, 100, LayerMask.GetMask("Tile", "Hover", "Highlight", "AttackUI")))
+        if (Physics.Raycast(ray, out info, 100, LayerMask.GetMask("Tile", "Hover", "Highlight", "Attack")))
         {
             // Get the indexs of the tile i've hit
             Vector2Int hitPosition = LookupTileIndex(info.transform.gameObject);
@@ -93,13 +94,22 @@ public class Chessboard : MonoBehaviour
             // If we were already hovering a tile, change the previous one
             if (currentHover != hitPosition)
             {
-                tiles[currentHover.x, currentHover.y].layer = (ContainsValidMove(ref availableMoves, currentHover)) ? LayerMask.NameToLayer("Highlight") : LayerMask.NameToLayer("Tile");
-                if (tiles[currentHover.x, currentHover.y].layer == LayerMask.NameToLayer("Highlight"))
+                if(ContainsValidMove(ref availableMoves, currentHover))
                 {
-                    RenderObject(currentHover.x, currentHover.y, HighilghMaterial);
+                    if(monsters[currentHover.x, currentHover.y] != null)
+                    {
+                        tiles[currentHover.x, currentHover.y].layer = LayerMask.NameToLayer("Attack");
+                        RenderObject(currentHover.x, currentHover.y, AttackMaterial);
+                    }
+                    else
+                    {
+                        tiles[currentHover.x, currentHover.y].layer = LayerMask.NameToLayer("Highlight");
+                        RenderObject(currentHover.x, currentHover.y, HighilghMaterial);
+                    }
                 }
-                else if (tiles[currentHover.x, currentHover.y].layer == LayerMask.NameToLayer("Tile"))
+                else
                 {
+                    tiles[currentHover.x, currentHover.y].layer = LayerMask.NameToLayer("Tile");
                     RenderObject(currentHover.x, currentHover.y, tileMaterial);
                 }
 
@@ -139,9 +149,8 @@ public class Chessboard : MonoBehaviour
             if (currentDragging != null && isUIClick && Input.GetMouseButtonUp(0))
             {
                 Vector2Int previousPosition = new Vector2Int(currentDragging.currentX, currentDragging.currentY);
-
-                
                 bool validMove = MoveTo(currentDragging, hitPosition.x, hitPosition.y);
+                
                 if (!validMove)
                 {
                     currentDragging.SetPosition(GetTileCenter(previousPosition.x, previousPosition.y));
@@ -161,41 +170,28 @@ public class Chessboard : MonoBehaviour
         {
             if (currentHover != -Vector2Int.one)
             {
-                tiles[currentHover.x, currentHover.y].layer = (ContainsValidMove(ref availableMoves, currentHover)) ? LayerMask.NameToLayer("Highlight") : LayerMask.NameToLayer("Tile");
-                if(tiles[currentHover.x, currentHover.y].layer == LayerMask.NameToLayer("Highlight"))
+                if (ContainsValidMove(ref availableMoves, currentHover))
                 {
-                    RenderObject(currentHover.x, currentHover.y, HighilghMaterial);
+                    if (monsters[currentHover.x, currentHover.y] != null)
+                    {
+                        tiles[currentHover.x, currentHover.y].layer = LayerMask.NameToLayer("Attack");
+                        RenderObject(currentHover.x, currentHover.y, AttackMaterial);
+                    }
+                    else
+                    {
+                        tiles[currentHover.x, currentHover.y].layer = LayerMask.NameToLayer("Highlight");
+                        RenderObject(currentHover.x, currentHover.y, HighilghMaterial);
+                    }
                 }
-                else if(tiles[currentHover.x, currentHover.y].layer == LayerMask.NameToLayer("Tile"))
+                else
                 {
+                    tiles[currentHover.x, currentHover.y].layer = LayerMask.NameToLayer("Tile");
                     RenderObject(currentHover.x, currentHover.y, tileMaterial);
                 }
-                
+
                 currentHover = -Vector2Int.one;
-
             }
-
-            if(currentDragging && Input.GetMouseButtonUp(0))
-            {
-                Debug.Log("들어옴");
-                // 이동시 타일 색 변경
-                //ReMoveHighlightTiles();
-            }
-        }
-
-        //---------------------------------------------------------
-        // 내 마우스가 무엇을 집고 있는지 체크 = 이 부분도 보류!
-        /*
-        if(currentDragging)
-        {
-            Plane horizontalPlane = new Plane(Vector3.up, Vector3.up * yOffset);
-            float distance = 0.0f;
-            if(horizontalPlane.Raycast(ray, out distance))
-            {
-                currentDragging.SetPosition(ray.GetPoint(distance) + Vector3.up * dragOffset);
-            }
-        }*/
-        //--------------------------------------------------------
+        }  
     }
 
     // {Generate the board} = all tile make 
@@ -267,6 +263,10 @@ public class Chessboard : MonoBehaviour
         {
             return false;
         }
+        int monsterX = x;
+        int monsterY = y;
+
+        //int monsterfront = (monsters[x, y] != null) ? y - 1 : y;
 
         Vector2Int previousPosition = new Vector2Int(cp.currentX, cp.currentY);
 
@@ -304,19 +304,62 @@ public class Chessboard : MonoBehaviour
                 }
 
                 deadMonster.Add(ocp);
+                monsters[ocp.currentX, ocp.currentY] = null;
                 ocp.SetScale(Vector3.one * deathSize);
                 ocp.SetPosition(new Vector3(-1 * tilesize, yOffset, 8 * tilesize)
                     - bounds + new Vector3(tilesize / 2, 0, tilesize / 2)
                     + (Vector3.back * deathSpacing) * deadMonster.Count);
             }
 
+            if(cp.currentX == ocp.currentX)
+            {
+                if (cp.currentY < ocp.currentY)
+                    monsterY = y - 1;
+                else
+                    monsterY = y + 1;
+            }
+            else if(cp.currentY == ocp.currentY)
+            {
+                if(cp.currentX < ocp.currentX)
+                    monsterX = x - 1;
+                else
+                    monsterX = x + 1;
+            }
+            else if(cp.currentX < ocp.currentX)
+            {
+                if(cp.currentY < ocp.currentY)
+                {
+                    monsterX = x - 1;
+                    monsterY = y - 1;
+                }
+                else
+                {
+                    monsterX = x - 1;
+                    monsterY = y + 1;
+                }
+            }
+            else if (cp.currentX > ocp.currentX)
+            {
+                if (cp.currentY < ocp.currentY)
+                {
+                    monsterX = x + 1;
+                    monsterY = y - 1;
+                }
+                else
+                {
+                    monsterX = x + 1;
+                    monsterY = y + 1;
+                }
+            }
         }
 
-        monsters[x, y] = cp;
-        monsters[previousPosition.x, previousPosition.y] = null;
-
-        PositionSingleMonster(x, y);
-
+        if (monsters[monsterX, monsterY] != monsters[previousPosition.x, previousPosition.y])
+        {
+            monsters[monsterX, monsterY] = cp;
+            monsters[previousPosition.x, previousPosition.y] = null;
+            PositionSingleMonster(monsterX, monsterY);
+        }
+        
         isPlayerTurn = !isPlayerTurn;
 
         return true;
@@ -391,8 +434,16 @@ public class Chessboard : MonoBehaviour
     {
         for (int i = 0; i < availableMoves.Count; i++)
         {
-            tiles[availableMoves[i].x, availableMoves[i].y].layer = LayerMask.NameToLayer("Highlight");
-            RenderObject(availableMoves[i].x, availableMoves[i].y, HighilghMaterial);
+            if (monsters[availableMoves[i].x, availableMoves[i].y] != null)
+            {
+                tiles[availableMoves[i].x, availableMoves[i].y].layer = LayerMask.NameToLayer("Attack");
+                RenderObject(availableMoves[i].x, availableMoves[i].y, AttackMaterial);
+            }
+            else
+            {
+                tiles[availableMoves[i].x, availableMoves[i].y].layer = LayerMask.NameToLayer("Highlight");
+                RenderObject(availableMoves[i].x, availableMoves[i].y, HighilghMaterial);
+            }
         }
     }
     private void ReMoveHighlightTiles()
@@ -482,6 +533,17 @@ public class Chessboard : MonoBehaviour
 
         //Get a list of where I can go, hightlight tiles as well
         availableMoves = currentDragging.GetAvailableMoves(ref monsters, tile_X, tile_Y);
+
+        HighlightTiles();
+    }
+
+    public void OnMoveButton2()
+    {
+        isUIClick = true;
+        currentDragging = monsters[PresentPosition.x, PresentPosition.y];
+
+        //Get a list of where I can go, hightlight tiles as well
+        availableMoves = currentDragging.GetAvailableAttacks(ref monsters, tile_X, tile_Y);
 
         HighlightTiles();
     }

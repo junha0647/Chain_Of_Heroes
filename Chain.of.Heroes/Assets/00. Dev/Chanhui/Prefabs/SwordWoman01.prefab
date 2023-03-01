@@ -523,7 +523,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1390879838845488739}
   - component: {fileID: 723856405344885327}
-  - component: {fileID: -8275982467780294965}
+  - component: {fileID: -5032504856097553355}
   m_Layer: 0
   m_Name: SwordWoman01
   m_TagString: Untagged
@@ -568,7 +568,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &-8275982467780294965
+--- !u!114 &-5032504856097553355
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
