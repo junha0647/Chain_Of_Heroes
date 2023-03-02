@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/00. Dev/Chanhui/Scenes/Chan.unity
     guid: d82ac9375a743fc4bb3676ce263e7bba
+  - enabled: 1
+    path: Assets/00. Dev/Junha/Base/BC/BaseCamp.unity
+    guid: efb6d86c6cbaa47448c477991bc09620
+  - enabled: 1
+    path: Assets/00. Dev/Junha/Base/SS/SelectStage.unity
+    guid: e940c76a941db7a4aad2df6123bfeb31
   m_configObjects: {}
