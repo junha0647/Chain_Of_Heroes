@@ -220,15 +220,17 @@ public class Chessboard : MonoBehaviour
         tileObject.AddComponent<MeshRenderer>().material = tileMaterial;
 
         Vector3[] vertices = new Vector3[4];
-        vertices[0] = new Vector3(x * tileSize, yOffset, y * tileSize) - bounds;
-        vertices[1] = new Vector3(x * tileSize, yOffset, (y + 1) * tileSize) - bounds;
+        vertices[0] = new Vector3(x * tileSize, yOffset, (y + 1) * tileSize) - bounds;
+        vertices[1] = new Vector3((x + 1) * tileSize, yOffset, (y + 1) * tileSize) - bounds;
         vertices[2] = new Vector3((x + 1) * tileSize, yOffset, y * tileSize) - bounds;
-        vertices[3] = new Vector3((x + 1) * tileSize, yOffset, (y + 1) * tileSize) - bounds;
+        vertices[3] = new Vector3(x * tileSize, yOffset, y * tileSize) - bounds;
 
-        int[] tris = new int[] { 0, 1, 2, 1, 3, 2 };
+        int[] tris = new int[] { 0, 1, 2, 0, 2, 3 };
+        Vector2[] uvs = new Vector2[] { new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(1f, 0f), new Vector2(0f, 0f) };
 
         mesh.vertices = vertices;
         mesh.triangles = tris;
+        mesh.uv = uvs;
 
         tileObject.layer = LayerMask.NameToLayer("Tile");
         tileObject.AddComponent<BoxCollider>().size = new Vector3(tilesize, 0.1f, tilesize);
