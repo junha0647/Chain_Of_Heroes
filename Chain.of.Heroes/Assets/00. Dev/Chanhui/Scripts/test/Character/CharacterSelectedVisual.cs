@@ -16,7 +16,7 @@ public class CharacterSelectedVisual : MonoBehaviour
 
     private void Start()
     {
-        CharacterActionSystem.Instance.OnSelectedUnitChanged += CharacterActionSystem_OnSelectedCharacterChanged;
+        CharacterActionSystem.Instance.OnSelectedCharacterChanged += CharacterActionSystem_OnSelectedCharacterChanged;
 
         UpdateVisual();
     }

@@ -41,4 +41,9 @@ public class GridObject
     {
         return characterList;
     }
+
+    public bool HasAnyCharacter()
+    {
+        return characterList.Count > 0;
+    }
 }
