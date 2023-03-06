@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class CharacterActionSystemUI : MonoBehaviour
+public class UnitActionSystemUI : MonoBehaviour
 {
 
     [SerializeField] private Transform actionButtonPrefab;
@@ -21,19 +21,19 @@ public class CharacterActionSystemUI : MonoBehaviour
 
     private void Start()
     {
-        CharacterActionSystem.Instance.OnSelectedCharacterChanged += CharacterActionSystem_OnSelectedCharacterChanged;
-        CharacterActionSystem.Instance.OnSelectedActionChanged += CharacterActionSystem_OnSelectedActionChanged;
-        CharacterActionSystem.Instance.OnActionStarted += CharacterActionSystem_OnActionStarted;
+        UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
+        UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
+        UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
-        Character.OnAnyActionPointsChanged += Character_OnAnyActionPointsChanged;
+        Unit.OnAnyActionPointsChanged += Unit_OnAnyActionPointsChanged;
 
         UpdateActionPoints();
-        CreateCharaterActionButtons();
+        CreateUnitActionButtons();
         UpdateSelectedVisual();
     }
 
 
-    private void CreateCharaterActionButtons()
+    private void CreateUnitActionButtons()
     {
         foreach(Transform buttonTransform in actionButtonContainerTransform)
         {
@@ -42,9 +42,9 @@ public class CharacterActionSystemUI : MonoBehaviour
 
         actionButtonUIList.Clear();
 
-        Character selectedCharacter = CharacterActionSystem.Instance.GetSelecterdCharacter();
+        Unit selectedUnit = UnitActionSystem.Instance.GetSelecterdUnit();
 
-        foreach(BaseAction baseAction in selectedCharacter.GetBaseActionArray())
+        foreach(BaseAction baseAction in selectedUnit.GetBaseActionArray())
         {
             Transform actionButtonTransform = Instantiate(actionButtonPrefab, actionButtonContainerTransform);
             ActionButtonUI actionButtonUI = actionButtonTransform.GetComponent<ActionButtonUI>();
@@ -54,19 +54,19 @@ public class CharacterActionSystemUI : MonoBehaviour
         }
     }
 
-    private void CharacterActionSystem_OnSelectedCharacterChanged(object sender, EventArgs e)
+    private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs e)
     {
-        CreateCharaterActionButtons();
+        CreateUnitActionButtons();
         UpdateSelectedVisual();
         UpdateActionPoints();
     }
 
-    private void CharacterActionSystem_OnSelectedActionChanged(object sender, EventArgs e)
+    private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs e)
     {
         UpdateSelectedVisual();
     }
 
-    private void CharacterActionSystem_OnActionStarted(object sender, EventArgs e)
+    private void UnitActionSystem_OnActionStarted(object sender, EventArgs e)
     {
         UpdateActionPoints();
     }
@@ -81,9 +81,9 @@ public class CharacterActionSystemUI : MonoBehaviour
 
     private void UpdateActionPoints()
     {
-        Character selectedCharacter = CharacterActionSystem.Instance.GetSelecterdCharacter();
+        Unit selectedUnit = UnitActionSystem.Instance.GetSelecterdUnit();
 
-        actionPointsText.text = "Action Points: " + selectedCharacter.GetActionPoints();
+        actionPointsText.text = "Action Points: " + selectedUnit.GetActionPoints();
     }
 
     private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
@@ -91,7 +91,7 @@ public class CharacterActionSystemUI : MonoBehaviour
         UpdateActionPoints();
     }
 
-    private void Character_OnAnyActionPointsChanged(object sender, EventArgs e)
+    private void Unit_OnAnyActionPointsChanged(object sender, EventArgs e)
     {
         UpdateActionPoints();
     }

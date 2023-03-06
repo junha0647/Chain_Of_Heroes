@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 4310009142200282345}
   - component: {fileID: 5879098885615522624}
   m_Layer: 16
-  m_Name: Character
+  m_Name: Unit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,8 +171,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb4358b1641368643924ef3efb5a242d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CharacterAnimator: {fileID: 7773483412237048355}
-  maxMoveDistance: 4
+  UnitAnimator: {fileID: 7773483412237048355}
+  maxMoveDistance: 1
 --- !u!114 &5879098885615522624
 MonoBehaviour:
   m_ObjectHideFlags: 0

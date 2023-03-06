@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public class Unit : MonoBehaviour
 {
-    private const int ACTION_POINTS_MAX = 2;
+    private const int ACTION_POINTS_MAX = 3;
 
     public static event EventHandler OnAnyActionPointsChanged;
+
+    [SerializeField] private bool isEnemy;
+
 
     private GridPosition gridPosition;
     private MoveAction moveAction;
@@ -25,7 +28,7 @@ public class Character : MonoBehaviour
     private void Start()
     {
         gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
-        LevelGrid.Instance.AddCharacterAtGridPosition(gridPosition, this);
+        LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
 
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
     }
@@ -37,7 +40,7 @@ public class Character : MonoBehaviour
         if(newGridPosition != gridPosition)
         {
             // Character changed Grid Position
-            LevelGrid.Instance.CharacterMovedGridPosition(this, gridPosition, newGridPosition);
+            LevelGrid.Instance.UnitMovedGridPosition(this, gridPosition, newGridPosition);
             gridPosition = newGridPosition;
         }
     }

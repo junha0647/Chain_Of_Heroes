@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MoveAction : BaseAction
 {
-    [SerializeField] private Animator CharacterAnimator;
+    [SerializeField] private Animator UnitAnimator;
     [SerializeField] private int maxMoveDistance = 4;
 
     private Vector3 targetPosition;
@@ -31,11 +31,11 @@ public class MoveAction : BaseAction
             float moveSpeed = 4f;
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
 
-            CharacterAnimator.SetBool("IsWalking", true);
+            UnitAnimator.SetBool("IsWalking", true);
         }
         else
         {
-            CharacterAnimator.SetBool("IsWalking", false);
+            UnitAnimator.SetBool("IsWalking", false);
             isActive = false;
             onActionComplete();
         }
@@ -56,27 +56,27 @@ public class MoveAction : BaseAction
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();
 
-        GridPosition characterGridPosition = character.GetGridPosition();
+        GridPosition unitGridPosition = unit.GetGridPosition();
 
         for(int x = -maxMoveDistance; x <= maxMoveDistance; x++)
         {
             for(int z = -maxMoveDistance; z <= maxMoveDistance; z++)
             {
                 GridPosition offsetGridPosition = new GridPosition(x, z);
-                GridPosition testGridPosition = characterGridPosition + offsetGridPosition;
+                GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
 
                 if(!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
                 {
                     continue;
                 }
 
-                if(characterGridPosition == testGridPosition)
+                if(unitGridPosition == testGridPosition)
                 {
                     // Same Grid POsition where the character is already at
                     continue;
                 }
 
-                if(LevelGrid.Instance.HasAnyCharacterOnGridPosition(testGridPosition))
+                if(LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
                 {
                     // Grid Position already occupied with another Character
                     continue;

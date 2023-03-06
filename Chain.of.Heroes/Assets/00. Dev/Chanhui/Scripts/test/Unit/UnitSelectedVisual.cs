@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterSelectedVisual : MonoBehaviour
+public class UnitSelectedVisual : MonoBehaviour
 {
-    [SerializeField] private Character character;
+    [SerializeField] private Unit character;
 
     private MeshRenderer meshRenderer;
 
@@ -16,19 +16,19 @@ public class CharacterSelectedVisual : MonoBehaviour
 
     private void Start()
     {
-        CharacterActionSystem.Instance.OnSelectedCharacterChanged += CharacterActionSystem_OnSelectedCharacterChanged;
+        UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedCharacterChanged;
 
         UpdateVisual();
     }
 
-    private void CharacterActionSystem_OnSelectedCharacterChanged(object sender, EventArgs empty)
+    private void UnitActionSystem_OnSelectedCharacterChanged(object sender, EventArgs empty)
     {
         UpdateVisual();
     }
 
     private void UpdateVisual()
     {
-        if (CharacterActionSystem.Instance.GetSelecterdCharacter() == character)
+        if (UnitActionSystem.Instance.GetSelecterdUnit() == character)
         {
             meshRenderer.enabled = true;
         }

@@ -20,13 +20,13 @@ public class ActionButtonUI : MonoBehaviour
         textMeshPro.text = baseAction.GetActionName().ToUpper();
 
         button.onClick.AddListener(() => {
-            CharacterActionSystem.Instance.SetSelectedAction(baseAction);
+            UnitActionSystem.Instance.SetSelectedAction(baseAction);
         });
     }
 
     public void UpdateSelectedVisual()
     {
-        BaseAction selectedBaseAction = CharacterActionSystem.Instance.GetSelectedAction();
+        BaseAction selectedBaseAction = UnitActionSystem.Instance.GetSelectedAction();
         selectedGameObject.SetActive(selectedBaseAction == baseAction);
     }
 

@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CharacterActionSystem : MonoBehaviour
+public class UnitActionSystem : MonoBehaviour
 {
-    public static CharacterActionSystem Instance { get; private set; }
+    public static UnitActionSystem Instance { get; private set; }
 
-    public event EventHandler OnSelectedCharacterChanged;
+    public event EventHandler OnSelectedUnitChanged;
     public event EventHandler OnSelectedActionChanged;
-    public event EventHandler<bool> OnBusyChanged;
+    public event EventHandler<bool> OnBusyUnit;
     public event EventHandler OnActionStarted;
 
-    [SerializeField] private Character selectedCharacter;
-    [SerializeField] private LayerMask CharacterLayerMask;
+    [SerializeField] private Unit selectedUnit;
+    [SerializeField] private LayerMask UnitLayerMask;
 
     private BaseAction selectedAction;
     private bool isBusy;
@@ -32,7 +32,7 @@ public class CharacterActionSystem : MonoBehaviour
 
     private void Start()
     {
-        SetSelectedCharacter(selectedCharacter);
+        SetSelectedUnit(selectedUnit);
     }
 
     private void Update()
@@ -47,7 +47,7 @@ public class CharacterActionSystem : MonoBehaviour
             return;
         }
 
-        if (TryHandleCharacterSelection())
+        if (TryHandleUnitSelection())
         { 
             return; 
         }
@@ -67,7 +67,7 @@ public class CharacterActionSystem : MonoBehaviour
                 return;
             }
 
-            if (!selectedCharacter.TrySpendActionPointsToTakeAction(selectedAction))
+            if (!selectedUnit.TrySpendActionPointsToTakeAction(selectedAction))
             {
                 return;
             }
@@ -83,32 +83,32 @@ public class CharacterActionSystem : MonoBehaviour
     {
         isBusy = true;
 
-        OnBusyChanged?.Invoke(this, isBusy);
+        OnBusyUnit?.Invoke(this, isBusy);
     }
 
     private void ClearBusy()
     {
         isBusy = false;
 
-        OnBusyChanged?.Invoke(this, isBusy);
+        OnBusyUnit?.Invoke(this, isBusy);
     }
 
-    private bool TryHandleCharacterSelection()
+    private bool TryHandleUnitSelection()
     {
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, CharacterLayerMask))
+            if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, UnitLayerMask))
             {
-                if (raycastHit.transform.TryGetComponent<Character>(out Character character))
+                if (raycastHit.transform.TryGetComponent<Unit>(out Unit unit))
                 {
-                    if(character == selectedCharacter)
+                    if(unit == selectedUnit)
                     {
                         // character is already selected
                         return false;
                     }
 
-                    SetSelectedCharacter(character);
+                    SetSelectedUnit(unit);
                     return true;
                 }
             }
@@ -117,13 +117,13 @@ public class CharacterActionSystem : MonoBehaviour
         return false;
     }
 
-    private void SetSelectedCharacter(Character character)
+    private void SetSelectedUnit(Unit unit)
     {
-        selectedCharacter = character;
+        selectedUnit = unit;
 
-        SetSelectedAction(character.GetMoveAction());
+        SetSelectedAction(unit.GetMoveAction());
 
-        OnSelectedCharacterChanged?.Invoke(this, EventArgs.Empty);
+        OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void SetSelectedAction(BaseAction baseAction)
@@ -133,9 +133,9 @@ public class CharacterActionSystem : MonoBehaviour
         OnSelectedActionChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public Character GetSelecterdCharacter()
+    public Unit GetSelecterdUnit()
     {
-        return selectedCharacter;
+        return selectedUnit;
     }
 
     public BaseAction GetSelectedAction()

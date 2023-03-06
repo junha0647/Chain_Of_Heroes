@@ -25,29 +25,29 @@ public class LevelGrid : MonoBehaviour
         gridSystem.CreateDebugObject(gridDebugObjectPrefab);
     }
 
-    public void AddCharacterAtGridPosition(GridPosition gridPosition, Character character)
+    public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit)
     {
         GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-        gridObject.AddCharacter(character);
+        gridObject.AddUnit(unit);
     }
 
-    public List<Character> GetCharcterListAtGridPosition(GridPosition gridPosition)
+    public List<Unit> GetUnitListAtGridPosition(GridPosition gridPosition)
     {
         GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-        return gridObject.GetCharacterList();
+        return gridObject.GetUnitList();
     }
 
-    public void RemoveCharacterAtGridPosition(GridPosition gridPosition, Character character)
+    public void RemoveUnitAtGridPosition(GridPosition gridPosition, Unit unit)
     {
         GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-        gridObject.RemoveCharacter(character);
+        gridObject.RemoveUnit(unit);
     }
 
-    public void CharacterMovedGridPosition(Character character, GridPosition fromGridPosition, GridPosition toGridPosition)
+    public void UnitMovedGridPosition(Unit unit, GridPosition fromGridPosition, GridPosition toGridPosition)
     {
-        RemoveCharacterAtGridPosition(fromGridPosition, character);
+        RemoveUnitAtGridPosition(fromGridPosition, unit);
 
-        AddCharacterAtGridPosition(toGridPosition, character);
+        AddUnitAtGridPosition(toGridPosition, unit);
     }
 
     public GridPosition GetGridPosition(Vector3 worldPosition) => gridSystem.GetGridPosition(worldPosition);
@@ -59,9 +59,9 @@ public class LevelGrid : MonoBehaviour
     public int GetWidth() => gridSystem.GetWidth();
     public int GetHeight() => gridSystem.GetHeight();
 
-    public bool HasAnyCharacterOnGridPosition(GridPosition gridPosition)
+    public bool HasAnyUnitOnGridPosition(GridPosition gridPosition)
     {
         GridObject gridObject = gridSystem.GetGridObject(gridPosition);
-        return gridObject.HasAnyCharacter();
+        return gridObject.HasAnyUnit();
     }
 }
