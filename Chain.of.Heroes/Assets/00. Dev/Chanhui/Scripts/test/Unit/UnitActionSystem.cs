@@ -41,6 +41,11 @@ public class UnitActionSystem : MonoBehaviour
         {
             return;
         }
+        //  몬스터 턴
+        if(!TurnSystem.Instance.IsPlayerTurn())
+        {
+            return;
+        }
 
         if(EventSystem.current.IsPointerOverGameObject())
         {
@@ -105,6 +110,12 @@ public class UnitActionSystem : MonoBehaviour
                     if(unit == selectedUnit)
                     {
                         // character is already selected
+                        return false;
+                    }
+
+                    if(unit.IsEnemy())
+                    {
+                        // Clicked on an enemy
                         return false;
                     }
 

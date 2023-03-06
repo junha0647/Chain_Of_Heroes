@@ -13,6 +13,7 @@ public class Unit : MonoBehaviour
 
 
     private GridPosition gridPosition;
+    private HealthSystem healthSystem;
     private MoveAction moveAction;
     private SpinAction spinAction;
     private BaseAction[] baseActionArray;
@@ -20,6 +21,7 @@ public class Unit : MonoBehaviour
 
     private void Awake()
     {
+        healthSystem = GetComponent<HealthSystem>();
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
         baseActionArray = GetComponents<BaseAction>();
@@ -102,11 +104,30 @@ public class Unit : MonoBehaviour
         return actionPoints;
     }
 
-    private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
+    public Vector3 GetWorldPosition()
     {
-        actionPoints = ACTION_POINTS_MAX;
-
-        OnAnyActionPointsChanged?.Invoke(this, EventArgs.Empty);
+        return transform.position;
     }
 
+    private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
+    {
+        if(IsEnemy() && !TurnSystem.Instance.IsPlayerTurn() ||
+            (!IsEnemy() && TurnSystem.Instance.IsPlayerTurn()))
+        {
+            actionPoints = ACTION_POINTS_MAX;
+
+            OnAnyActionPointsChanged?.Invoke(this, EventArgs.Empty);
+        }
+       
+    }
+
+    public bool IsEnemy()
+    {
+        return isEnemy;
+    }
+
+    public void Damage(int damageAmount)
+    {
+        healthSystem.Damage(damageAmount);
+    }
 }
