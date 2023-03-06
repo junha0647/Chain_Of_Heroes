@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using System; // Serializable
+using System;
 
 public enum pClass { Rook, Knight, Bishop, Queen, King }
 [Serializable]
@@ -26,6 +26,22 @@ public class PlayerStatus
     public float CriticalRate;
     public float CriticalDamage;
     public pClass Class;
+
+    public void debugInfo()
+    {
+        Debug.Log(Name + ", " +
+            Level + ", " +
+            MaxLevel + ", " +
+            CurrentExp + ", " +
+            MaxExp + ", " +
+            AttackPower + ", " +
+            ChainAttackPower + ", " +
+            DefensePower + ", " +
+            Hp + ", " +
+            CriticalRate + ", " +
+            CriticalDamage + ", " +
+            Class);
+    }
 }
 
 public class JSONReader : MonoBehaviour
@@ -41,9 +57,9 @@ public class JSONReader : MonoBehaviour
 
     private void Awake()
     {
-        TextAsset textAsset = Resources.Load<TextAsset>("Json/filejson");
+        TextAsset textAsset = Resources.Load<TextAsset>("JSON/filejson");
 
-        p = JsonUtility.FromJson<Player>(textAsset.text); // 데이터가 있긴 하지만 특정한 것만 받아올 수는 없는가?
+        p = JsonUtility.FromJson<Player>(textAsset.text);
 
         foreach (PlayerStatus ps in p.player)
         {

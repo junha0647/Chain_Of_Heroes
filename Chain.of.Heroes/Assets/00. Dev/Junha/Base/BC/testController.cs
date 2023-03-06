@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class testController : MonoBehaviour
 {
-    //Animator _animator;
+    Animator _animator;
     Camera _camera;
     CharacterController _controller;
 
@@ -19,7 +19,7 @@ public class testController : MonoBehaviour
 
     private void Start()
     {
-        //_animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
         _camera = Camera.main;
         _controller = GetComponent<CharacterController>();
     }
@@ -68,6 +68,7 @@ public class testController : MonoBehaviour
         _controller.Move(moveDirection.normalized * finalSpeed * Time.deltaTime);
 
         float percent = ((run) ? 1 : 0.5f) * moveDirection.magnitude;
-        //_animator.SetFloat("Blend", percent, 0.1f, Time.deltaTime);
+        Debug.Log(percent);
+        _animator.SetFloat("Blend", percent, 0.1f, Time.deltaTime);
     }
 }
