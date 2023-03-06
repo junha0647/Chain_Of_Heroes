@@ -2749,13 +2749,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1390949775339051018}
   - component: {fileID: 1395136465821247272}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Chess Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1390949775339051018
 Transform:
   m_ObjectHideFlags: 0
@@ -2874,12 +2874,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileMaterial: {fileID: 2100000, guid: 57503684875ed9940b315daf5060ee14, type: 2}
   ToachtileMaterial: {fileID: 2100000, guid: 02a7fe6dcc067c743a55806d49cd6732, type: 2}
+  HighilghMaterial: {fileID: 2100000, guid: d90833824c4199d4fa13e3263c7773e5, type: 2}
+  AttackMaterial: {fileID: 2100000, guid: 84dcd01436850494aaac38bc531ebb11, type: 2}
+  deathSize: 0.7
+  deathSpacing: 0.3
+  victoryScreen: {fileID: 0}
+  AttackScreen: {fileID: 0}
   monsterData: {fileID: 0}
+  Player: {fileID: 1731270618823988441, guid: 250b79a7d759eaa4fa74536cae57038d, type: 3}
   tilesize: 2
   tile_X: 8
   tile_Y: 8
   yOffset: 1.3
   boardCenter: {x: 0, y: 0, z: 0}
+  deadPlayer: []
+  deadMonster: []
 --- !u!1 &1394243756739042452
 GameObject:
   m_ObjectHideFlags: 0
