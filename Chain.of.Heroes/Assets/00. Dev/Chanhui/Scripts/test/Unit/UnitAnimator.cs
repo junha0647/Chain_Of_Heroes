@@ -10,6 +10,7 @@ public class UnitAnimator : MonoBehaviour
     [SerializeField] private Transform bulletProjectilePrefab;
     [SerializeField] private Transform shootPointTransform;
 
+    private HealthSystem healthSystem;
 
     private void Awake()
     {
@@ -23,6 +24,10 @@ public class UnitAnimator : MonoBehaviour
         {
             shootAction.OnShoot += shootAction_OnShoot;
         }
+
+        healthSystem = GetComponent<HealthSystem>();
+
+        healthSystem.OnDead += HealthSystem_OnDead;
     }
 
     private void MoveAction_OnStartMoving(object sender, EventArgs e)
@@ -49,5 +54,10 @@ public class UnitAnimator : MonoBehaviour
 
         bulletProjectile.Setup(targetUnitShootAtPosition);
 
+    }
+
+    private void HealthSystem_OnDead(object sender, EventArgs e)
+    {
+        animator.SetBool("IsDie", true);
     }
 }

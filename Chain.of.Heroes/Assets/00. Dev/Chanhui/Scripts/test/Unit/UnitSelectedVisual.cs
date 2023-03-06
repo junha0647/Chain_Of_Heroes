@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UnitSelectedVisual : MonoBehaviour
 {
-    [SerializeField] private Unit character;
+    [SerializeField] private Unit unit;
 
     private MeshRenderer meshRenderer;
 
@@ -28,7 +28,7 @@ public class UnitSelectedVisual : MonoBehaviour
 
     private void UpdateVisual()
     {
-        if (UnitActionSystem.Instance.GetSelecterdUnit() == character)
+        if (UnitActionSystem.Instance.GetSelecterdUnit() == unit)
         {
             meshRenderer.enabled = true;
         }
@@ -36,5 +36,10 @@ public class UnitSelectedVisual : MonoBehaviour
         {
             meshRenderer.enabled = false;
         }
+    }
+
+    private void OnDestroy()
+    {
+        UnitActionSystem.Instance.OnSelectedUnitChanged -= UnitActionSystem_OnSelectedCharacterChanged;
     }
 }
