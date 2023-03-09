@@ -23,7 +23,7 @@ public class ReadyAction : BaseAction
     }
 
     private State state;
-    private int maxReadyDistance = 7;
+    private int maxReadyDistance = 2;
     private float stateTimer;
     private Unit targetUnit;
     private bool canShootBullet;
@@ -103,9 +103,13 @@ public class ReadyAction : BaseAction
 
     public override List<GridPosition> GetValidActionGridPositionList()
     {
-        List<GridPosition> validGridPositionList = new List<GridPosition>();
-
         GridPosition unitGridPosition = unit.GetGridPosition();
+        return GetValidActionGridPositionList(unitGridPosition);
+    }
+
+    public List<GridPosition> GetValidActionGridPositionList(GridPosition unitGridPosition)
+    {
+        List<GridPosition> validGridPositionList = new List<GridPosition>();
 
         for (int x = -maxReadyDistance; x <= maxReadyDistance; x++)
         {
@@ -149,8 +153,6 @@ public class ReadyAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        ActionStart(onActionComplete);
-
         targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
 
         state = State.Aiming;
@@ -158,5 +160,34 @@ public class ReadyAction : BaseAction
         stateTimer = aimingStateTime;
 
         canShootBullet = true;
+
+        ActionStart(onActionComplete);
+    }
+
+    public Unit GetTargetUnit()
+    {
+        return targetUnit;
+    }
+
+    public int GetMaxShootDistance()
+    {
+        return maxReadyDistance;
+    }
+
+    public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
+    {
+        Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
+
+
+        return new EnemyAIAction
+        {
+            gridPosition = gridPosition,
+            actionValue = 100 + Mathf.RoundToInt((1 - targetUnit.GetHealthNormalized()) * 100f),
+        };
+    }
+
+    public int GetTargetCountAtPosition(GridPosition gridPosition)
+    {
+        return GetValidActionGridPositionList(gridPosition).Count;
     }
 }

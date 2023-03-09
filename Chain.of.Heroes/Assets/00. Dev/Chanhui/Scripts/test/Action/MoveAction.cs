@@ -48,11 +48,11 @@ public class MoveAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        ActionStart(onActionComplete);
-
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
 
         OnStartMoving?.Invoke(this, EventArgs.Empty);
+
+        ActionStart(onActionComplete);
     }
 
     // 이동 범위 선정
@@ -99,4 +99,14 @@ public class MoveAction : BaseAction
         return "Move";
     }
 
+    public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
+    {
+        int targetCountAtGridPosition = unit.GetAction<ReadyAction>().GetTargetCountAtPosition(gridPosition);
+
+        return new EnemyAIAction
+        {
+            gridPosition = gridPosition,
+            actionValue = targetCountAtGridPosition * 10,
+        };
+    }
 }
