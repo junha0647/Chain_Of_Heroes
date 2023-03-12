@@ -25,9 +25,25 @@ public class UnitAnimator : MonoBehaviour
             shootAction.OnShoot += shootAction_OnShoot;
         }
 
+        if (TryGetComponent<SwordAction>(out SwordAction swordAction))
+        {
+            swordAction.OnSwordActionStarted += SwordAction_OnSwordActionStarted;
+            swordAction.OnSwordActionCompleted += SwordAction_OnSwordActionCompleted;
+        }
+
         healthSystem = GetComponent<HealthSystem>();
 
         healthSystem.OnDead += HealthSystem_OnDead;
+    }
+
+    private void SwordAction_OnSwordActionStarted(object sender, EventArgs e)
+    {
+        animator.SetTrigger("SwordSlash");
+    }
+
+    private void SwordAction_OnSwordActionCompleted(object sender, EventArgs e)
+    {
+
     }
 
     private void MoveAction_OnStartMoving(object sender, EventArgs e)
