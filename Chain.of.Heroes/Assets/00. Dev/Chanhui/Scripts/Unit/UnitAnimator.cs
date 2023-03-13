@@ -31,6 +31,14 @@ public class UnitAnimator : MonoBehaviour
             swordAction.OnSwordActionCompleted += SwordAction_OnSwordActionCompleted;
         }
 
+        if (TryGetComponent<RookAction>(out RookAction rookAction))
+        {
+            rookAction.OnRookStartMoving += rookAction_OnRookStartMoving;
+            rookAction.OnRookStopMoving += rookAction_OnRookStopMoving;
+            rookAction.OnRookActionStarted += rookAction_OnRookActionStarted;
+            rookAction.OnRookActionCompleted += rookAction_OnRookActionCompleted;
+        }
+
         healthSystem = GetComponent<HealthSystem>();
 
         healthSystem.OnDead += HealthSystem_OnDead;
@@ -44,6 +52,25 @@ public class UnitAnimator : MonoBehaviour
     private void SwordAction_OnSwordActionCompleted(object sender, EventArgs e)
     {
 
+    }
+    private void rookAction_OnRookActionStarted(object sender, EventArgs e)
+    {
+        animator.SetTrigger("SwordSlash");
+    }
+
+    private void rookAction_OnRookActionCompleted(object sender, EventArgs e)
+    {
+        
+    }
+
+    private void rookAction_OnRookStartMoving(object sender, EventArgs e)
+    {
+        animator.SetBool("IsWalking", true);
+    }
+
+    private void rookAction_OnRookStopMoving(object sender, EventArgs e)
+    {
+        animator.SetBool("IsWalking", false);
     }
 
     private void MoveAction_OnStartMoving(object sender, EventArgs e)

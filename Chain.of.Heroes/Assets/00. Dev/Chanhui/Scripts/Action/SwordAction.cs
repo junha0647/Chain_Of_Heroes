@@ -15,7 +15,7 @@ public class SwordAction : BaseAction
         SwingingSwordAfterHit,
     }
 
-    private int maxSwordDistance = 1;
+    private int maxSwordDistance = 2;
     private State state;
     private float stateTimer;
     private Unit targetUnit;

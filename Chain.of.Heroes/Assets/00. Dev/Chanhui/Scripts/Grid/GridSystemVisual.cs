@@ -21,7 +21,8 @@ public class GridSystemVisual : MonoBehaviour
         Blue,
         Red,
         RedSoft,
-        Yellow
+        Yellow,
+        RedMiddle
     }
 
     [SerializeField] private Transform gridSystemVisualSingPrefab;
@@ -104,6 +105,34 @@ public class GridSystemVisual : MonoBehaviour
         ShowGridPositionList(gridPositionList, gridVisualType);
     }
 
+    private void ShowGridPositionRookRange(GridPosition gridPosition, int range, GridVisualType gridVisualType)
+    {
+        List<GridPosition> gridPositionList = new List<GridPosition>();
+        for (int x = -range; x <= range; x++)
+        {
+            for (int z = -range; z <= range; z++)
+            {
+                GridPosition testGridPosition = gridPosition + new GridPosition(x, z);
+
+                if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                {
+                    continue;
+                }
+
+                int testX = Mathf.Abs(x);
+                int testZ = Mathf.Abs(z);
+                if ((testX != 0) && (testZ != 0))
+                {
+                    continue;
+                }
+
+                gridPositionList.Add(testGridPosition);
+            }
+        }
+
+        ShowGridPositionList(gridPositionList, gridVisualType);
+    }
+
     private void ShowGridPositionRangeSquare(GridPosition gridPosition, int range, GridVisualType gridVisualType)
     {
         List<GridPosition> gridPositionList = new List<GridPosition>();
@@ -161,6 +190,12 @@ public class GridSystemVisual : MonoBehaviour
                 gridVisualType = GridVisualType.Red;
 
                 ShowGridPositionRangeSquare(selectedUnit.GetGridPosition(), swordAction.GetMaxSwordDistance(), GridVisualType.RedSoft);
+                break;
+            case RookAction rookAction:
+                gridVisualType = GridVisualType.Red;
+
+                ShowGridPositionRange(selectedUnit.GetGridPosition(), rookAction.GetMaxRookDistance(), GridVisualType.RedSoft);
+                ShowGridPositionRookRange(selectedUnit.GetGridPosition(), rookAction.GetMaxRookDistance(), GridVisualType.RedMiddle);
                 break;
         }
 

@@ -125,6 +125,7 @@ public class ReadyAction : BaseAction
                     continue;
                 }
 
+
                 int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
                 if(testDistance > maxReadyDistance)
                 {

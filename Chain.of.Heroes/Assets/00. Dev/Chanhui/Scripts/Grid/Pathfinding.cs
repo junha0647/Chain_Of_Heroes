@@ -89,8 +89,8 @@ public class Pathfinding : MonoBehaviour
             if(currentNode == endNode)
             {
                 // Reached final node
-                pathLength = endNode.GetFCost();
-                return CalculatePath(endNode);
+                pathLength = currentNode.GetFCost();
+                return CalculatePath(currentNode);
             }
 
             openList.Remove(currentNode);
@@ -119,6 +119,82 @@ public class Pathfinding : MonoBehaviour
                     neighbourNode.CalculateFCost();
 
                     if(!openList.Contains(neighbourNode))
+                    {
+                        openList.Add(neighbourNode);
+                    }
+                }
+            }
+        }
+
+        // No path found
+        pathLength = 0;
+        return null;
+    }
+
+    public List<GridPosition> AttackFindPath(GridPosition startGridPosition, GridPosition endGridPosition, out int pathLength)
+    {
+        List<PathNode> openList = new List<PathNode>();
+        List<PathNode> closedList = new List<PathNode>();
+
+        PathNode startNode = gridSystem.GetGridObject(startGridPosition);
+        PathNode endNode = gridSystem.GetGridObject(endGridPosition);
+        openList.Add(startNode);
+
+        for (int x = 0; x < gridSystem.GetWidth(); x++)
+        {
+            for (int z = 0; z < gridSystem.GetHeight(); z++)
+            {
+                GridPosition gridPosition = new GridPosition(x, z);
+                PathNode pathNode = gridSystem.GetGridObject(gridPosition);
+
+                pathNode.SetGCost(int.MaxValue);
+                pathNode.SetHCost(0);
+                pathNode.CalculateFCost();
+                pathNode.ResetCameFromPathNode();
+            }
+        }
+
+        startNode.SetGCost(0);
+        startNode.SetHCost(CalculateDistance(startGridPosition, endGridPosition));
+        startNode.CalculateFCost();
+
+        while (openList.Count > 0)
+        {
+            PathNode currentNode = GetLowestFCostPathNode(openList);
+
+            if (currentNode == endNode)
+            {
+                // Reached final node
+                pathLength = currentNode.GetFCost();
+                return CalculatePath(currentNode);
+            }
+
+            openList.Remove(currentNode);
+            closedList.Add(currentNode);
+
+            foreach (PathNode neighbourNode in GetNeighbourList(currentNode))
+            {
+                if (closedList.Contains(neighbourNode))
+                {
+                    continue;
+                }
+
+                if (!neighbourNode.IsWalkable())
+                {
+                    closedList.Add(neighbourNode);
+                    continue;
+                }
+
+                int tentativeGCost = currentNode.GetGCost() + CalculateDistance(currentNode.GetGridPosition(), neighbourNode.GetGridPosition());
+
+                if (tentativeGCost < neighbourNode.GetGCost())
+                {
+                    neighbourNode.SetCameFromPathNode(currentNode);
+                    neighbourNode.SetGCost(tentativeGCost);
+                    neighbourNode.SetHCost(CalculateDistance(neighbourNode.GetGridPosition(), endGridPosition));
+                    neighbourNode.CalculateFCost();
+
+                    if (!openList.Contains(neighbourNode))
                     {
                         openList.Add(neighbourNode);
                     }
