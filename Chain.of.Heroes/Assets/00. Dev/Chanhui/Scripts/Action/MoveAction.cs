@@ -37,6 +37,8 @@ public class MoveAction : BaseAction
         }
         else
         {
+            Debug.Log("positionList = " + positionList.Count);
+            Debug.Log("currentPositionIndex = " + currentPositionIndex);
             currentPositionIndex++;
             if(currentPositionIndex >= positionList.Count)
             {

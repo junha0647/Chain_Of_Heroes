@@ -133,7 +133,7 @@ public class GridSystemVisual : MonoBehaviour
         ShowGridPositionList(gridPositionList, gridVisualType);
     }
 
-    private void ShowGridPositionRangeSquare(GridPosition gridPosition, int range, GridVisualType gridVisualType)
+    private void ShowGridPositionKingRange(GridPosition gridPosition, int range, GridVisualType gridVisualType)
     {
         List<GridPosition> gridPositionList = new List<GridPosition>();
         for (int x = -range; x <= range; x++)
@@ -147,6 +147,62 @@ public class GridSystemVisual : MonoBehaviour
                     continue;
                 }
 
+
+                gridPositionList.Add(testGridPosition);
+            }
+        }
+
+        ShowGridPositionList(gridPositionList, gridVisualType);
+    }
+
+    private void ShowGridPositionBishopRange(GridPosition gridPosition, int range, GridVisualType gridVisualType)
+    {
+        List<GridPosition> gridPositionList = new List<GridPosition>();
+        for (int x = -range; x <= range; x++)
+        {
+            for (int z = -range; z <= range; z++)
+            {
+                GridPosition testGridPosition = gridPosition + new GridPosition(x, z);
+
+                if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                {
+                    continue;
+                }
+
+                int testX = Mathf.Abs(x);
+                int testZ = Mathf.Abs(z);
+                if (testX != testZ)
+                {
+                    continue;
+                }
+
+                gridPositionList.Add(testGridPosition);
+            }
+        }
+
+        ShowGridPositionList(gridPositionList, gridVisualType);
+    }
+
+    private void ShowGridPositionQueenRange(GridPosition gridPosition, int range, GridVisualType gridVisualType)
+    {
+        List<GridPosition> gridPositionList = new List<GridPosition>();
+        for (int x = -range; x <= range; x++)
+        {
+            for (int z = -range; z <= range; z++)
+            {
+                GridPosition testGridPosition = gridPosition + new GridPosition(x, z);
+
+                if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                {
+                    continue;
+                }
+
+                int testX = Mathf.Abs(x);
+                int testZ = Mathf.Abs(z);
+                if ((testX != 0) && (testZ != 0) && (testX != testZ))
+                {
+                    continue;
+                }
 
                 gridPositionList.Add(testGridPosition);
             }
@@ -186,16 +242,28 @@ public class GridSystemVisual : MonoBehaviour
 
                 ShowGridPositionRange(selectedUnit.GetGridPosition(), readAction.GetMaxShootDistance(), GridVisualType.RedSoft);
                 break;
-            case SwordAction swordAction:
+            case KingAction kingAction:
                 gridVisualType = GridVisualType.Red;
 
-                ShowGridPositionRangeSquare(selectedUnit.GetGridPosition(), swordAction.GetMaxSwordDistance(), GridVisualType.RedSoft);
+                ShowGridPositionKingRange(selectedUnit.GetGridPosition(), kingAction.GetMaxKingDistance(), GridVisualType.RedMiddle);
                 break;
             case RookAction rookAction:
                 gridVisualType = GridVisualType.Red;
 
                 ShowGridPositionRange(selectedUnit.GetGridPosition(), rookAction.GetMaxRookDistance(), GridVisualType.RedSoft);
                 ShowGridPositionRookRange(selectedUnit.GetGridPosition(), rookAction.GetMaxRookDistance(), GridVisualType.RedMiddle);
+                break;
+            case BishopAction bishopAction:
+                gridVisualType = GridVisualType.Red;
+
+                ShowGridPositionKingRange(selectedUnit.GetGridPosition(), bishopAction.GetMaxBishopDistance(), GridVisualType.RedSoft);
+                ShowGridPositionBishopRange(selectedUnit.GetGridPosition(), bishopAction.GetMaxBishopDistance(), GridVisualType.RedMiddle);
+                break;
+            case QueenAction queenAction:
+                gridVisualType = GridVisualType.Red;
+
+                ShowGridPositionKingRange(selectedUnit.GetGridPosition(), queenAction.GetMaxQueenDistance(), GridVisualType.RedSoft);
+                ShowGridPositionQueenRange(selectedUnit.GetGridPosition(), queenAction.GetMaxQueenDistance(), GridVisualType.RedMiddle);
                 break;
         }
 

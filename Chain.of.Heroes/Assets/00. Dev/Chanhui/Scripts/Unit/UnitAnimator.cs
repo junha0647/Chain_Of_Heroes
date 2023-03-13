@@ -25,10 +25,10 @@ public class UnitAnimator : MonoBehaviour
             shootAction.OnShoot += shootAction_OnShoot;
         }
 
-        if (TryGetComponent<SwordAction>(out SwordAction swordAction))
+        if (TryGetComponent<KingAction>(out KingAction kingAction))
         {
-            swordAction.OnSwordActionStarted += SwordAction_OnSwordActionStarted;
-            swordAction.OnSwordActionCompleted += SwordAction_OnSwordActionCompleted;
+            kingAction.OnKingActionStarted += KingAction_OnKingActionStarted;
+            kingAction.OnKingActionCompleted += KingAction_OnKingActionCompleted;
         }
 
         if (TryGetComponent<RookAction>(out RookAction rookAction))
@@ -39,17 +39,34 @@ public class UnitAnimator : MonoBehaviour
             rookAction.OnRookActionCompleted += rookAction_OnRookActionCompleted;
         }
 
+        if (TryGetComponent<BishopAction>(out BishopAction bishopAction))
+        {
+            bishopAction.OnBishopStartMoving += bishopAction_OnBishopStartMoving;
+            bishopAction.OnBishopStopMoving += bishopAction_OnBishopStopMoving;
+            bishopAction.OnBishopActionStarted += bishopAction_OnBishopActionStarted;
+            bishopAction.OnBishopActionCompleted += bishopAction_OnBishopActionCompleted;
+        }
+
+        if (TryGetComponent<QueenAction>(out QueenAction queenAction))
+        {
+            queenAction.OnQueenStartMoving += queenAction_OnQueenStartMoving;
+            queenAction.OnQueenStopMoving += queenAction_OnQueenStopMoving;
+            queenAction.OnQueenActionStarted += queenAction_OnQueenActionStarted;
+            queenAction.OnQueenActionCompleted += queenAction_OnQueenActionCompleted;
+        }
+
         healthSystem = GetComponent<HealthSystem>();
 
         healthSystem.OnDead += HealthSystem_OnDead;
     }
 
-    private void SwordAction_OnSwordActionStarted(object sender, EventArgs e)
+    #region Attack Action
+    private void KingAction_OnKingActionStarted(object sender, EventArgs e)
     {
         animator.SetTrigger("SwordSlash");
     }
 
-    private void SwordAction_OnSwordActionCompleted(object sender, EventArgs e)
+    private void KingAction_OnKingActionCompleted(object sender, EventArgs e)
     {
 
     }
@@ -72,6 +89,47 @@ public class UnitAnimator : MonoBehaviour
     {
         animator.SetBool("IsWalking", false);
     }
+
+    private void bishopAction_OnBishopStartMoving(object sender, EventArgs e)
+    {
+        animator.SetBool("IsWalking", true);
+    }
+
+    private void bishopAction_OnBishopStopMoving(object sender, EventArgs e)
+    {
+        animator.SetBool("IsWalking", false);
+    }
+
+    private void bishopAction_OnBishopActionStarted(object sender, EventArgs e)
+    {
+        animator.SetTrigger("SwordSlash");
+    }
+
+    private void bishopAction_OnBishopActionCompleted(object sender, EventArgs e)
+    {
+        
+    }
+
+    private void queenAction_OnQueenStartMoving(object sender, EventArgs e)
+    {
+        animator.SetBool("IsWalking", true);
+    }
+
+    private void queenAction_OnQueenStopMoving(object sender, EventArgs e)
+    {
+        animator.SetBool("IsWalking", false);
+    }
+
+    private void queenAction_OnQueenActionStarted(object sender, EventArgs e)
+    {
+        animator.SetTrigger("SwordSlash");
+    }
+
+    private void queenAction_OnQueenActionCompleted(object sender, EventArgs e)
+    {
+
+    }
+    #endregion
 
     private void MoveAction_OnStartMoving(object sender, EventArgs e)
     {

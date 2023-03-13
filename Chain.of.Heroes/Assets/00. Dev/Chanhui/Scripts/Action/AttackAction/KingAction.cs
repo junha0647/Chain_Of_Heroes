@@ -3,19 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwordAction : BaseAction
+public class KingAction : BaseAction
 {
 
-    public event EventHandler OnSwordActionStarted;
-    public event EventHandler OnSwordActionCompleted;
+    public event EventHandler OnKingActionStarted;
+    public event EventHandler OnKingActionCompleted;
 
     private enum State
     {
-        SwingingSwordBeforeHit,
-        SwingingSwordAfterHit,
+        SwingingKingBeforeHit,
+        SwingingKingAfterHit,
     }
 
-    private int maxSwordDistance = 2;
+    private int maxKingDistance = 1;
     private State state;
     private float stateTimer;
     private Unit targetUnit;
@@ -41,13 +41,13 @@ public class SwordAction : BaseAction
 
         switch (state)
         {
-            case State.SwingingSwordBeforeHit:
+            case State.SwingingKingBeforeHit:
                 Vector3 aimDir = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
 
                 float rotateSpeed = 20f;
                 transform.forward = Vector3.Lerp(transform.forward, aimDir, Time.deltaTime * rotateSpeed);
                 break;
-            case State.SwingingSwordAfterHit:
+            case State.SwingingKingAfterHit:
                 
 
                 break;
@@ -63,14 +63,14 @@ public class SwordAction : BaseAction
     {
         switch (state)
         {
-            case State.SwingingSwordBeforeHit:
-                state = State.SwingingSwordAfterHit;
+            case State.SwingingKingBeforeHit:
+                state = State.SwingingKingAfterHit;
                 float afterHitStateTime = 0.5f;
                 stateTimer = afterHitStateTime;
                 targetUnit.Damage(100);
                 break;
-            case State.SwingingSwordAfterHit:
-                OnSwordActionCompleted?.Invoke(this, EventArgs.Empty);
+            case State.SwingingKingAfterHit:
+                OnKingActionCompleted?.Invoke(this, EventArgs.Empty);
                 ActionComplete();
                 break;
         }
@@ -83,9 +83,9 @@ public class SwordAction : BaseAction
 
         GridPosition unitGridPosition = unit.GetGridPosition();
 
-        for(int x = -maxSwordDistance; x <= maxSwordDistance; x++)
+        for(int x = -maxKingDistance; x <= maxKingDistance; x++)
         {
-            for(int z = -maxSwordDistance; z <= maxSwordDistance; z++)
+            for(int z = -maxKingDistance; z <= maxKingDistance; z++)
             {
                 GridPosition offsetGridPosition = new GridPosition(x, z);
                 GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
@@ -121,22 +121,22 @@ public class SwordAction : BaseAction
     {
         targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
 
-        state = State.SwingingSwordBeforeHit;
+        state = State.SwingingKingBeforeHit;
         float beforeHitStateTime = 0.7f;
         stateTimer = beforeHitStateTime;
 
-        OnSwordActionStarted?.Invoke(this, EventArgs.Empty);
+        OnKingActionStarted?.Invoke(this, EventArgs.Empty);
 
         ActionStart(onActionComplete);
     }
 
     public override string GetActionName()
     {
-        return "Sword";
+        return "King";
     }
 
-    public int GetMaxSwordDistance()
+    public int GetMaxKingDistance()
     {
-        return maxSwordDistance;
+        return maxKingDistance;
     }
 }

@@ -24,7 +24,7 @@ public class RookAction : BaseAction
         SwingingRookAfterHit,
     }
 
-    private int maxRookstance = 3;
+    [SerializeField] private int maxRookDistance = 3;
     private State state;
     private float stateTimer;
     private Unit targetUnit;
@@ -34,11 +34,9 @@ public class RookAction : BaseAction
         return new EnemyAIAction
         {
             gridPosition = gridPosition,
-            actionValue = 200,
+            actionValue = 0,
         };
-
     }
-
     private void Update()
     {
         if (!isActive)
@@ -49,27 +47,27 @@ public class RookAction : BaseAction
         stateTimer -= Time.deltaTime;
 
         targetPosition = positionList[currentPositionIndex];
-        moveDirection = (targetPosition - transform.position).normalized;
+        moveDirection = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
 
-        
-        if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
+        if (state == State.SwingingRookBeforeMoving)
         {
-            float moveSpeed = 4f;
-            transform.position += moveDirection * moveSpeed * Time.deltaTime;
-        }
-        else
-        {
-
-            if(currentPositionIndex < positionList.Count - 1)
+            if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
             {
-                Debug.Log(positionList.Count);
-                currentPositionIndex++;
-            }      
-            else if (currentPositionIndex >= positionList.Count)
+                float moveSpeed = 4f;
+                transform.position += moveDirection * moveSpeed * Time.deltaTime;
+            }
+            else
             {
-                Debug.Log("¾Èµé¾î¿È?");
-                OnRookStopMoving?.Invoke(this, EventArgs.Empty);
-                state = State.SwingingRookAfterMoving;
+                float BeforepositionList = positionList.Count - 1;
+                if (currentPositionIndex >= BeforepositionList)
+                {
+                    OnRookStopMoving?.Invoke(this, EventArgs.Empty);
+                    state = State.SwingingRookAfterMoving;
+                }
+                else
+                {
+                    currentPositionIndex++;
+                }
             }
         }
         
@@ -107,6 +105,8 @@ public class RookAction : BaseAction
 
                 break;
             case State.SwingingRookAfterMoving:
+                float afterHitStateTime_1 = 0.7f;
+                stateTimer = afterHitStateTime_1;
                 OnRookActionStarted?.Invoke(this, EventArgs.Empty);
                 state = State.SwingingRookBeforeHit;
 
@@ -119,11 +119,9 @@ public class RookAction : BaseAction
                 break;
             case State.SwingingRookAfterHit:
                 OnRookActionCompleted?.Invoke(this, EventArgs.Empty);
-                Debug.Log("µé¾î¿È");
                 ActionComplete();
                 break;
         }
-
     }
 
     public override List<GridPosition> GetValidActionGridPositionList()
@@ -136,9 +134,9 @@ public class RookAction : BaseAction
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();
 
-        for (int x = -maxRookstance; x <= maxRookstance; x++)
+        for (int x = -maxRookDistance; x <= maxRookDistance; x++)
         {
-            for (int z = -maxRookstance; z <= maxRookstance; z++)
+            for (int z = -maxRookDistance; z <= maxRookDistance; z++)
             {
                 GridPosition offsetGridPosition = new GridPosition(x, z);
                 GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
@@ -202,11 +200,6 @@ public class RookAction : BaseAction
         {
             positionList.Add(LevelGrid.Instance.GetWorldPosition(pathgridPositionList[i]));
         }
-        /*
-        foreach (GridPosition pathgridPosition in pathgridPositionList)
-        {
-            positionList.Add(LevelGrid.Instance.GetWorldPosition(pathgridPosition));
-        }*/
 
         OnRookStartMoving?.Invoke(this, EventArgs.Empty);
 
@@ -215,7 +208,7 @@ public class RookAction : BaseAction
 
     public int GetMaxRookDistance()
     {
-        return maxRookstance;
+        return maxRookDistance;
     }
 
     public override string GetActionName()
